@@ -124,6 +124,7 @@ namespace TechJobsConsole
             {
                 foreach (Dictionary<string, string> job in someJobs)
                 {
+                    //display jobs as in demo, insert dictionary entries into string
                     Console.WriteLine("*****");
                     foreach (KeyValuePair<string, string> dict in job)
                     {

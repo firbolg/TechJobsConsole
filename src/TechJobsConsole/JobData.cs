@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Linq;
 
 namespace TechJobsConsole
 {
@@ -29,7 +30,7 @@ namespace TechJobsConsole
             foreach (Dictionary<string, string> job in AllJobs)
             {
                 string aValue = job[column];
-
+               
                 if (!values.Contains(aValue))
                 {
                     values.Add(aValue);
@@ -60,21 +61,32 @@ namespace TechJobsConsole
 
         public static List<Dictionary<string, string>> FindByValue(string value)
         {
+            // load data, if not already loaded
+
             LoadData();
-
-            List<Dictionary<string, string>> jobdescriptions = new List<Dictionary<string, string>>();
-
+           
+            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+            
+            string valueLower = value.ToLower();
+            
             foreach (Dictionary<string, string> row in AllJobs)
             {
-                foreach (KeyValuePair<string, string> item in row)
+                //case insensitive search method with a new dictionary
+                Dictionary<string, string> rowLower = new Dictionary<string, string>();
+                foreach (string key in row.Keys)
                 {
-                    if (item.Value.Contains(value) && !jobdescriptions.Contains(row))
-                    {
-                        jobdescriptions.Add(row);
-                    }
+                    rowLower.Add(key.ToLower(), row[key].ToLower());
+                }
+                
+                var lowercasematch = from item in rowLower where item.Value.Contains(valueLower) select rowLower.Keys;
+                //find the lowercase key that matches the lowercase search term, then add that job
+                if (lowercasematch.Count() != 0)
+                {
+                    //display jobs from original dictionary 
+                    jobs.Add(row);
                 }
             }
-            return jobdescriptions;
+            return jobs;
         }
 
 
