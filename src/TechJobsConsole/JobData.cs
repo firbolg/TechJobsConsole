@@ -41,25 +41,38 @@ namespace TechJobsConsole
 
         public static List<Dictionary<string, string>> FindByColumnAndValue(string column, string value)
         {
+            //added for demo
             // load data, if not already loaded
             LoadData();
 
             List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
 
+            string valueLower = value.ToLower();
+
             foreach (Dictionary<string, string> row in AllJobs)
             {
-                string aValue = row[column];
-
-                if (aValue.Contains(value))
+                //case insensitive search method with a new dictionary
+                Dictionary<string, string> rowLower = new Dictionary<string, string>();
+                foreach (string key in row.Keys)
                 {
+                    rowLower.Add(key.ToLower(), row[key].ToLower());
+                }
+
+                var lowercasematch = from item in rowLower where item.Value.Contains(valueLower) select rowLower.Keys;
+                //find the lowercase key that matches the lowercase search term, then add that job
+                if (lowercasematch.Count() != 0)
+                {
+                    //display jobs from original dictionary 
                     jobs.Add(row);
                 }
-            }
 
-            return jobs;
-        }
+                
+                }
 
-        public static List<Dictionary<string, string>> FindByValue(string value)
+                return jobs;
+                }
+
+                public static List<Dictionary<string, string>> FindByValue(string value)
         {
             // load data, if not already loaded
 
